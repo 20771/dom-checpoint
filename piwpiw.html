@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Add your styles here */
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .heart-icon {
+            cursor: pointer;
+        }
+
+        .total-price {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+    <title>Shopping Cart</title>
+</head>
+<body>
+    <h1>Shopping Cart</h1>
+
+    <div id="cart">
+        <!-- Sample Cart Items (preselected) -->
+        <div class="cart-item" data-id="1">
+            <span>Item 1</span>
+            <button class="quantity-btn" onclick="adjustQuantity(1, -1)">-</button>
+            <span class="quantity">1</span>
+            <button class="quantity-btn" onclick="adjustQuantity(1, 1)">+</button>
+            <button class="delete-btn" onclick="deleteItem(1)">Delete</button>
+            <span class="heart-icon" onclick="toggleLike(1)">❤️</span>
+            <span class="price">Price: $10</span>
+        </div>
+
+        <div class="cart-item" data-id="2">
+            <span>Item 2</span>
+            <button class="quantity-btn" onclick="adjustQuantity(2, -1)">-</button>
+            <span class="quantity">2</span>
+            <button class="quantity-btn" onclick="adjustQuantity(2, 1)">+</button>
+            <button class="delete-btn" onclick="deleteItem(2)">Delete</button>
+            <span class="heart-icon" onclick="toggleLike(2)">❤️</span>
+            <span class="price">Price: $20</span>
+        </div>
+    </div>
+
+    <div class="total-price" id="totalPrice">Total Price: $30</div>
+
+<!-- ... (previous code) ... -->
+
+<button onclick="generateNewItem()">Generate New Item</button>
+
+<script>
+    // Sample data (preselected items)
+    let cartItems = [
+        { id: 1, quantity: 1, price: 10, liked: false },
+        { id: 2, quantity: 2, price: 20, liked: false }
+    ];
+
+    // Function to adjust quantity
+    function adjustQuantity(itemId, change) {
+        const item = cartItems.find(item => item.id === itemId);
+        item.quantity += change;
+        updateCart();
+    }
+
+    // Function to delete an item
+    function deleteItem(itemId) {
+        const index = cartItems.findIndex(item => item.id === itemId);
+        cartItems.splice(index, 1);
+        updateCart();
+    }
+
+    // Function to toggle like status
+    function toggleLike(itemId) {
+        const item = cartItems.find(item => item.id === itemId);
+        item.liked = !item.liked;
+        updateCart();
+    }
+
+    // Function to generate a new item
+    function generateNewItem() {
+        const newItemId = cartItems.length + 1;
+        const newItem = {
+            id: newItemId,
+            quantity: 1,
+            price: Math.floor(Math.random() * 10) + 1, // Random price between 1 and 10
+            liked: false
+        };
+
+        cartItems.push(newItem);
+        updateCart();
+    }
+
+    // Function to update the cart and total price
+    function updateCart() {
+        let totalPrice = 0;
+
+        // Update each item in the cart
+        const cartElement = document.getElementById('cart');
+        cartElement.innerHTML = '';  // Clear the existing content
+
+        cartItems.forEach(item => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'cart-item';
+            itemElement.setAttribute('data-id', item.id);
+
+            itemElement.innerHTML = `
+                <span>Item ${item.id}</span>
+                <button class="quantity-btn" onclick="adjustQuantity(${item.id}, -1)">-</button>
+                <span class="quantity">${item.quantity}</span>
+                <button class="quantity-btn" onclick="adjustQuantity(${item.id}, 1)">+</button>
+                <button class="delete-btn" onclick="deleteItem(${item.id})">Delete</button>
+                <span class="heart-icon" onclick="toggleLike(${item.id})" style="color: ${item.liked ? 'red' : 'black'}">❤️</span>
+                <span class="price">Price: $${item.quantity * item.price}</span>
+            `;
+
+            cartElement.appendChild(itemElement);
+
+            // Update total price
+            totalPrice += item.quantity * item.price;
+        });
+
+        // Update total price element
+        document.getElementById('totalPrice').textContent = `Total Price: $${totalPrice}`;
+    }
+
+    // Initial update
+    updateCart();
+</script>
+
+<!-- ... (remaining code) ... -->
+</body>
+</html>
